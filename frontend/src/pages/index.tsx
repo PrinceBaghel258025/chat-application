@@ -11,8 +11,21 @@ import Auth from "../components/Auth";
 const Home: NextPage = () => {
   const { data: session, status } = useSession();
 
-  console.log(session);
-  return <Box>{session && session?.user?.username ? <Chat session={session} /> : <Auth session={session} />}</Box>;
+  const reloadSession = () => {
+    const event = new Event("visibilitychange");
+    document.dispatchEvent(event);
+  }
+
+  console.log("inside index.ts",session);
+  return (
+    <Box>
+      {session && session?.user?.username ? (
+        <Chat session={session} />
+      ) : (
+        <Auth session={session} reloadSession={reloadSession} />
+      )}
+    </Box>
+  );
 };
 
 export async function getServerSideProps(context: NextPageContext) {

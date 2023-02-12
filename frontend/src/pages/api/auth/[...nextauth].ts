@@ -16,5 +16,15 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_SECRET as string
     })
   ],
+  callbacks: {
+    async session({ session, token, user }) {
+      // Send properties to the client, like an access_token and user id from a provider.
+      // session.accessToken = token.accessToken
+      // session.user.id = token.id
+      // console.log("inside the session callback -- session" , session)
+      // console.log("inside the session callback -- databaseUser" , user)
+      return {...session, user: { ...session.user, ...user}}
+    }
+  },
   secret: process.env.NEXTAUTH_SECRET
 })

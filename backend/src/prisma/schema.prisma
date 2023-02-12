@@ -1,17 +1,16 @@
 datasource db {
   provider          = "mongodb"
   url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // Only needed when using a cloud provider that doesn't support the creation of new databases, like Heroku. Learn more: https://pris.ly/migrate-shadow
 }
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialActions"] // You won't need this in Prisma 3.X or higher.
+
 }
 
 model Account {
   id                       String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId                   String
+  userId                   String  @db.ObjectId
   type                     String
   provider                 String
   providerAccountId        String
@@ -32,7 +31,8 @@ model Account {
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String
+  userId       String   @db.ObjectId
+  
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -40,7 +40,7 @@ model Session {
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
-  username      String?   @unique
+  username     String   @unique
   email         String?   @unique
   emailVerified DateTime?
   image         String?
