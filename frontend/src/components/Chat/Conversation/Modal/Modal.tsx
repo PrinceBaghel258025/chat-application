@@ -27,6 +27,7 @@ import {
 import UserList from "./UserList";
 import Participants from "./Participants";
 import { Session } from "next-auth";
+import { useRouter } from "next/router";
 
 interface IConversationModalProps {
   isOpen: boolean;
@@ -42,6 +43,8 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
 
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
+  const router = useRouter();
+
 
   const [
     searchUsers,
@@ -107,7 +110,22 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
         },
       });
 
-      console.log("createConversation Data", data)
+      // console.log("createConversation Data", data)
+      if(!data?.createConversation) {
+        throw new Error("Failed to create conversation")
+      }
+
+      const {createConversation: { conversationId}} = data;
+
+      router.push({ query: { conversationId}});
+
+      // clear state and close modal
+      // on successful creation
+
+    setParticipants([])
+    setUsername("")
+    onClose()
+
     } catch (error: any) {
       console.log("create Conversations error", error?.message);
     }

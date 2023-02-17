@@ -1,3 +1,4 @@
+import { ConversationPopulated } from '@/../backend/src/utils/types';
 import { Box , Text} from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import React, { useState } from 'react'
@@ -5,10 +6,11 @@ import Modal from './Modal/Modal';
 
 interface ConversationListProps {
   session: Session | null
+  conversations: Array<ConversationPopulated>
 
 }
 
-const  ConversationList : React.FC<ConversationListProps>  = ({ session }) => {
+const  ConversationList : React.FC<ConversationListProps>  = ({ session, conversations }) => {
 
     const [isOpen, setIsOpen] = useState(false);
 
