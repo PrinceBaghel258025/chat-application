@@ -39,6 +39,7 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
   onClose,
   session,
 }) => {
+
   const [username, setUsername] = useState("");
   const [participants, setParticipants] = useState<Array<SearchedUser>>([]);
 
@@ -60,7 +61,7 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
   const {
     user: { id: userId },
   } = session;
-  console.log(userId);
+  // console.log(userId);
 
   //   return function BasicUsage() {
   //     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -74,7 +75,7 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
       return [...prev, user];
     });
     // setUsername("");
-    console.log(participants);
+    // console.log(participants);
     // console.log(participants)
   };
 
@@ -97,7 +98,7 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
       return;
     }
 
-    const participantIds = participants.map((p) => p.id);
+    const participantIds = [...participants.map((p) => p.id), userId];
 
     try {
       const { data } = await createConversation({
@@ -106,7 +107,7 @@ const ConversationModal: React.FC<IConversationModalProps> = ({
         },
       });
 
-      // console.log("createConversation Data", data)
+      console.log("createConversation Data", data)
     } catch (error: any) {
       console.log("create Conversations error", error?.message);
     }
