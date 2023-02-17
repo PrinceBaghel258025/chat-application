@@ -44,7 +44,7 @@ const main = async () => {
     expressMiddleware(server, {
       context: async ({ req }): Promise<GraphQLContext> => {
         const session = await getSession({ req })
-        console.log("index.ts main", session)
+        // console.log("index.ts main", session)
         return {
           session: session as Session,
           prisma

@@ -12,7 +12,7 @@ const theme = extendTheme(config,
         styles: {
             global: {
                 body: {
-                    bg: 'blackAlpha.900',
+                    bg: 'blackAlpha.800',
                     color: 'white'
                 }
             }

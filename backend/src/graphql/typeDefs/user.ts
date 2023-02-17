@@ -4,13 +4,14 @@ const typeDefs = gql`
     type User {
         id: String
         username: String
+        image: String
     }
     type CreateUsernameResponse {
     success: Boolean,
     error: String
     }
     type Query {
-        searchUser(username: String!) : User
+        searchUsers(username: String!) : [User]
     }
     type Mutation {
         createUsername(username: String!): CreateUsernameResponse

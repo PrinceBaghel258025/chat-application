@@ -16,7 +16,7 @@ const Auth: React.FC<IAuthProps> = ({ session, reloadSession }) => {
   const [username, setUsername] = useState("");
 
   // specifies type of returnData, and the variables passed
-  const [createUsername, { data, loading, error }] = useMutation<
+  const [createUsername, { loading, error }] = useMutation<
     createUsernameData,
     createUsernameVariables
   >(userOperations.Mutations.createUsername);
@@ -32,7 +32,7 @@ const Auth: React.FC<IAuthProps> = ({ session, reloadSession }) => {
           username,
         }
       });
-      console.log("got data back",data)
+      // console.log("got data back",data)
       if (!data?.createUsername) {
         throw new Error();
       }
@@ -63,7 +63,7 @@ const Auth: React.FC<IAuthProps> = ({ session, reloadSession }) => {
               }
               placeholder="Enter Username"
             />
-            <Button onClick={submit} colorScheme="cyan">
+            <Button onClick={submit} colorScheme="cyan" isLoading={loading}>
               Save
             </Button>
           </>
