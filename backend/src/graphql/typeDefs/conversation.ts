@@ -26,6 +26,10 @@ const typeDefs = gql`
         conversations: [Conversation]
     }
 
+    type Subscription {
+        conversationCreated: Conversation
+    }
+
     
 `
 

@@ -1,4 +1,4 @@
-import {} from '../../../backend/src/utils/types'
+import { ConversationPopulated } from '../../../backend/src/utils/types'
 
 /*
 users

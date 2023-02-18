@@ -16,7 +16,6 @@ const Home: NextPage = () => {
     document.dispatchEvent(event);
   }
 
-  console.log("inside index.ts",session);
   return (
     <Box>
       {session && session?.user?.username ? (

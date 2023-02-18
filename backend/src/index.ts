@@ -10,8 +10,14 @@ import typeDefs from './graphql/typeDefs';
 import resolvers from './graphql/resolvers';
 import { PrismaClient } from "@prisma/client";
 import { getSession } from 'next-auth/react';
-import { GraphQLContext, Session } from './utils/types';
+import { GraphQLContext, Session, SubscriptionContext } from './utils/types';
 import { makeExecutableSchema } from 'graphql-tools';
+import { PubSub } from 'graphql-subscriptions';
+
+
+
+import { WebSocketServer } from 'ws';
+import { useServer } from 'graphql-ws/lib/use/ws';
 interface MyContext {
   token?: string;
 }
@@ -22,9 +28,49 @@ const main = async () => {
     typeDefs,
     resolvers
   })
+
+  // Creating the WebSocket server
+const wsServer = new WebSocketServer({
+  // This is the `httpServer` we created in a previous step.
+  server: httpServer,
+  // Pass a different path here if app.use
+  // serves expressMiddleware at a different path
+  path: '/graphql/subscriptions',
+});
+
+const prisma = new PrismaClient()
+const pubsub = new PubSub();
+  // Hand in the schema we just created and have the
+// WebSocketServer start listening.
+  const serverCleanup = useServer({ schema, context: (ctx : SubscriptionContext) => {
+
+    if(ctx.connectionParams && ctx.connectionParams.session) {
+      const {session} = ctx.connectionParams;
+
+      return { session, prisma, pubsub} ;
+    }
+    return { session : null, prisma, pubsub}
+
+  } }, wsServer);
+
+
   const server = new ApolloServer<MyContext>({
     schema,
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    plugins: [
+      // Proper shutdown for the HTTP server.
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+  
+      // Proper shutdown for the WebSocket server.
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
   });
   // Ensure we wait for our server to start
   await server.start();
@@ -34,7 +80,9 @@ const main = async () => {
     origin: 'http://localhost:3000',
     credentials: true,
   };
-  const prisma = new PrismaClient()
+
+
+
   app.use(
     '/graphql',
     cors<cors.CorsRequest>(corsOptions),
@@ -47,7 +95,8 @@ const main = async () => {
         // console.log("index.ts main", session)
         return {
           session: session as Session,
-          prisma
+          prisma,
+          pubsub
         }
       }
     }),

@@ -9,7 +9,6 @@ interface IUserListProps {
 
 const UserList: React.FC<IUserListProps> = ({ users, addParticipant }) => {
 
-    console.log(users.length)
   return (
     <>
       {users.length === 0 ? (

@@ -2,6 +2,7 @@ import { ConversationPopulated } from '@/../backend/src/utils/types';
 import { Box , Text} from '@chakra-ui/react';
 import { Session } from 'next-auth';
 import React, { useState } from 'react'
+import ConversationItem from './ConversationItem';
 import Modal from './Modal/Modal';
 
 interface ConversationListProps {
@@ -23,6 +24,9 @@ const  ConversationList : React.FC<ConversationListProps>  = ({ session, convers
             <Text onClick={() => onOpen()} px={4} py={2} borderRadius={'full'} bg="whiteAlpha.200" align="center">Find or Create a Conversation</Text>
         </Box>
         <Modal isOpen={isOpen} onClose={onClose} session={session} />
+        {conversations.map(conversation => (
+          <ConversationItem conversation={conversation} key={conversation.id} />
+        ))}
     </Box>
   )
 }
