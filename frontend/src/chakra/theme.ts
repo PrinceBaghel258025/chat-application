@@ -19,7 +19,7 @@ const theme = extendTheme(config,
         },
         colors: {
             brand: {
-                100: "#f7fafc",
+                100: "#1b7ced",
                 900: "#1a202c",
             },
         }
