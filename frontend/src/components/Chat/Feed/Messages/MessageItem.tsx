@@ -1,6 +1,8 @@
 import { MessagePopulated } from "@/../backend/src/utils/types";
 import { messageFields } from "@/src/graphql/operations/messages";
 import { Avatar, Box, Flex, Stack, Text } from "@chakra-ui/react";
+import { formatRelative } from "date-fns";
+import enUS from "date-fns/locale/en-US";
 import React from "react";
 
 interface IMessageItemProps {
@@ -8,7 +10,16 @@ interface IMessageItemProps {
   sentByMe: boolean;
 }
 
+const formatRelativeLocale = {
+    lastWeek: "eeee 'at' p",
+    yesterday: "'Yesterday at' p",
+    today: "p",
+    other: "MM/dd/yy",
+  };
+
 const MessageItem: React.FC<IMessageItemProps> = ({ message, sentByMe }) => {
+
+    // console.log(message.createdAt)
   return (
     <Stack
       direction="row"
@@ -35,7 +46,7 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, sentByMe }) => {
             </Text>
           )}
           <Text fontSize={14} color="whiteAlpha.700">
-            {/* {formatRelative(message.createdAt, new Date(), {
+            {formatRelative(message.createdAt, new Date(), {
               locale: {
                 ...enUS,
                 formatRelative: (token) =>
@@ -43,8 +54,8 @@ const MessageItem: React.FC<IMessageItemProps> = ({ message, sentByMe }) => {
                     token as keyof typeof formatRelativeLocale
                   ],
               },
-            })} */}
-            {message.createdAt}
+            })}
+            {/* {message.createdAt} */}
           </Text>
         </Stack>
         <Flex direction="row" justify={sentByMe ? "flex-end" : "flex-start"}>
