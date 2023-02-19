@@ -33,7 +33,7 @@ const Messages: React.FC<IMessagesProps> = ({ userId, conversationId }) => {
   }
 
   const subscribeToMoreMessages = async (conversationId: string) => {
-    console.log(conversationId)
+    // console.log(conversationId)
     subscribeToMore({
       document: MessageOperations.Subscriptions.sentMessage,
       variables: {
@@ -44,11 +44,11 @@ const Messages: React.FC<IMessagesProps> = ({ userId, conversationId }) => {
           return prev;
         }
 
-        console.log("subscription Data", subscriptionData);
+        // console.log("subscription Data", subscriptionData);
         const newMessage = subscriptionData.data.sentMessage
 
         return Object.assign({}, prev, {
-          messages: [newMessage, ...prev.messages]
+          messages:  newMessage.sender.id === userId ? prev.messages :  [newMessage, ...prev.messages]
         })
 
       }
