@@ -22,7 +22,7 @@ interface ConversationItemProps {
   userId: string
   conversation: ConversationPopulated;
   onClick: () => void;
-  hasSeenLatestMessage?: boolean;
+  hasSeenLatestMessage?: boolean | undefined;
   selectedConversationId?: string;
   onDeleteConversation?: (conversationId: string) => void;
   onLeaveConversation?: (conversationId: string) => void;
@@ -94,10 +94,10 @@ const ConversationItem: React.FC<ConversationItemProps> = ({
             </MenuList>
           </Menu>
         )}
-        <Flex position="absolute" left="-6px">
+        <Flex position="absolute" left="6px">
           {hasSeenLatestMessage === false && (
             <GoPrimitiveDot fontSize={18} color="#6B46C1" />
-          )}
+          )} 
         </Flex>
         <Avatar />
         <Flex justify="space-between" width="80%">

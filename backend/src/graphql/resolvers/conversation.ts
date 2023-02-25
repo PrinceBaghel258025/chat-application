@@ -4,6 +4,7 @@ import { PubSub } from "graphql-subscriptions";
 import gql from "graphql-tag";
 import { ConversationPopulated, GraphQLContext } from "../../utils/types";
 import { withFilter } from 'graphql-subscriptions';
+// import { id } from "date-fns/locale";
 
 
 const resolver = {
@@ -92,6 +93,45 @@ const resolver = {
             }
             console.log(args);
             console.log('createConversation has been hit')
+        },
+        markConversationAsRead: async (_:any, args: {userId : string, conversationId: string}, context: GraphQLContext) : Promise<boolean> => {
+
+            const {session, prisma} = context;
+            const {userId, conversationId} = args;
+            // console.log("mark conversatinAsRead hit");
+
+            if(!session?.user) {
+                throw new GraphQLError("Not Authorized");
+            }
+
+            try {
+                const participant = await prisma.conversationParticipant.findFirst({
+                    where: {
+                        userId,
+                        conversationId
+                    }
+                })
+                
+                if(!participant) {
+                    throw new GraphQLError("Participant entity not found")
+                }
+                await prisma.conversationParticipant.update({
+                    where: {
+                        id: participant.id
+                    },
+                    data: {
+                        hasSeenLatestMessage: true
+                    }
+                })
+                return true;
+            } catch (error: any) {
+                console.log("markConversationAsRead error", error);
+                throw new GraphQLError(error?.message)
+                
+            }
+
+
+
         }
     },
     Subscription: {
