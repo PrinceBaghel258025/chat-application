@@ -149,11 +149,11 @@ const resolvers = {
                  */
 
                 pubsub.publish('MESSAGE_SENT', { sentMessage: newMessage });
-                // pubsub.publish('CONVERSATION_UPDATED', {
-                //     conversationUpdated: {
-                //         conversation: conversation
-                //     }
-                // });
+                pubsub.publish('CONVERSATION_UPDATED', {
+                    conversationUpdated: {
+                        conversation: conversation
+                    }
+                });
 
 
 

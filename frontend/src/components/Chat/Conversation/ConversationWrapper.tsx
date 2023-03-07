@@ -3,9 +3,9 @@ import { Session } from "next-auth";
 import React, { useEffect } from "react";
 import ConversationList from "./ConversationList";
 import ConversationsOperations from "@/src/graphql/operations/conversations";
-import { gql, useMutation, useQuery } from "@apollo/client";
-import { ConversationsData } from "@/src/utils/types";
-import { ConversationPopulated, ParticipantPopulated } from "@/../backend/src/utils/types";
+import { gql, useMutation, useQuery, useSubscription } from "@apollo/client";
+import { ConversationsData, ConversationUpdatedData } from "@/src/utils/types";
+import { ConversationPopulated, ParticipantPopulated } from "@/src/graphql/operations/conversations";
 import { useRouter } from "next/router";
 import SkeletonLoader from "../../common/SkeletonLoader";
 interface IConversationWrapperProps {
@@ -32,6 +32,28 @@ const ConversationWrapper: React.FC<IConversationWrapperProps> = ({
     { markConversationAsRead: boolean },
     { userId: string; conversationId: string }
   >(ConversationsOperations.Mutations.markConversationAsRead);
+
+  useSubscription<ConversationUpdatedData, null>(ConversationsOperations.Subscriptions.conversationUpdated,
+    {
+      onData: ({client, data}) => {
+        const {data: subscriptionData} = data;
+        console.log("onDataFiring", subscriptionData)
+        if(!subscriptionData) {
+          return ;
+        }
+
+        const {conversationUpdated: {conversation: updatedConversation} } =  subscriptionData;
+
+        const currentlyViewingConversation = updatedConversation.id === conversationId
+        if(currentlyViewingConversation) {
+          onViewConversation(conversationId, false)
+        }
+
+      }
+    })
+
+
+
 
   const onViewConversation = async (
     conversationId: string,

@@ -1,4 +1,4 @@
-import { ParticipantPopulated } from "@/../backend/src/utils/types";
+import { ParticipantPopulated } from "@/src/graphql/operations/conversations";
 
 export const formatUsernames = (
     participants: Array<ParticipantPopulated>,
